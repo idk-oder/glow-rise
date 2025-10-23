@@ -2,11 +2,15 @@ import { useState, useEffect } from "react";
 import GlowingBulb from "@/components/GlowingBulb";
 import DigitalClock from "@/components/DigitalClock";
 import AlarmTimePicker from "@/components/AlarmTimePicker";
-import { Sunrise } from "lucide-react";
+import { Sunrise, Bell } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import bedroomScene from "@/assets/bedroom-scene.jpg";
 
 const Index = () => {
   const [alarmTime, setAlarmTime] = useState("06:30");
   const [brightness, setBrightness] = useState(0);
+  const [isAlarmRinging, setIsAlarmRinging] = useState(false);
+  const [isSnoozed, setIsSnoozed] = useState(false);
 
   useEffect(() => {
     const calculateBrightness = () => {
@@ -22,22 +26,25 @@ const Index = () => {
         alarm.setDate(alarm.getDate() + 1);
       }
       
-      // Calculate time difference in minutes
+      // Calculate time difference in seconds
       const diffMs = alarm.getTime() - now.getTime();
-      const diffMinutes = diffMs / (1000 * 60);
+      const diffSeconds = diffMs / 1000;
       
-      // Start glowing 30 minutes before alarm
-      const glowStartMinutes = 30;
+      // Start glowing 30 seconds before alarm
+      const glowStartSeconds = 30;
       
-      if (diffMinutes <= 0) {
-        // Alarm has passed or is now - full brightness
+      if (diffSeconds <= 0) {
+        // Alarm has passed or is now - full brightness and ring alarm
+        setIsAlarmRinging(true);
         return 100;
-      } else if (diffMinutes > glowStartMinutes) {
+      } else if (diffSeconds > glowStartSeconds) {
         // Too early - minimal brightness
+        setIsAlarmRinging(false);
         return 5;
       } else {
         // Gradually increase brightness from 5% to 100%
-        const progress = 1 - (diffMinutes / glowStartMinutes);
+        const progress = 1 - (diffSeconds / glowStartSeconds);
+        setIsAlarmRinging(false);
         return 5 + (progress * 95);
       }
     };
@@ -51,15 +58,40 @@ const Index = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [alarmTime]);
+  }, [alarmTime, isSnoozed]);
+
+  const handleSnooze = () => {
+    const now = new Date();
+    const snoozeTime = new Date(now.getTime() + 5 * 60 * 1000); // 5 minutes
+    const hours = snoozeTime.getHours().toString().padStart(2, "0");
+    const minutes = snoozeTime.getMinutes().toString().padStart(2, "0");
+    setAlarmTime(`${hours}:${minutes}`);
+    setIsAlarmRinging(false);
+    setIsSnoozed(true);
+    setBrightness(5);
+  };
+
+  const handleDismiss = () => {
+    setIsAlarmRinging(false);
+    setBrightness(5);
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/30 to-background flex flex-col items-center justify-center p-8 overflow-hidden relative">
-      {/* Decorative background elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl animate-glow-pulse" />
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-accent/5 rounded-full blur-3xl animate-glow-pulse" style={{ animationDelay: "1s" }} />
-      </div>
+    <div className="min-h-screen flex flex-col items-center justify-center p-8 overflow-hidden relative">
+      {/* Bedroom background */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center transition-all duration-1000"
+        style={{
+          backgroundImage: `url(${bedroomScene})`,
+          filter: `brightness(${0.3 + (brightness / 100) * 0.4})`,
+        }}
+      />
+      
+      {/* Dark overlay for night effect */}
+      <div 
+        className="absolute inset-0 bg-black transition-opacity duration-1000"
+        style={{ opacity: 0.7 - (brightness / 100) * 0.5 }}
+      />
 
       <div className="relative z-10 w-full max-w-2xl flex flex-col items-center gap-12">
         {/* Header */}
@@ -76,10 +108,35 @@ const Index = () => {
         {/* Current Time */}
         <DigitalClock />
 
-        {/* Glowing Bulb */}
-        <div className="my-8">
+        {/* Wall-mounted Glowing Bulb */}
+        <div className="my-8 relative">
+          {/* Wall mount effect */}
+          <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-20 h-8 bg-muted/30 rounded-t-lg backdrop-blur-sm border border-border/20" />
           <GlowingBulb brightness={brightness} />
         </div>
+
+        {/* Alarm Controls */}
+        {isAlarmRinging && (
+          <div className="animate-fade-in flex gap-4 my-4">
+            <Button
+              onClick={handleSnooze}
+              variant="outline"
+              size="lg"
+              className="bg-card/90 backdrop-blur-sm border-primary/30 hover:bg-primary/20"
+            >
+              <Bell className="w-4 h-4 mr-2" />
+              Snooze (5 min)
+            </Button>
+            <Button
+              onClick={handleDismiss}
+              variant="default"
+              size="lg"
+              className="bg-primary hover:bg-primary/90"
+            >
+              Dismiss Alarm
+            </Button>
+          </div>
+        )}
 
         {/* Brightness Indicator */}
         <div className="w-full max-w-md space-y-3">
@@ -99,8 +156,8 @@ const Index = () => {
         <AlarmTimePicker alarmTime={alarmTime} onAlarmChange={setAlarmTime} />
 
         {/* Info Text */}
-        <div className="text-center text-xs text-muted-foreground/80 max-w-md animate-fade-in">
-          <p>The light will gradually brighten 30 minutes before your alarm time</p>
+        <div className="text-center text-xs text-foreground/60 max-w-md animate-fade-in backdrop-blur-sm bg-card/20 px-4 py-2 rounded-lg">
+          <p>The light will gradually brighten 30 seconds before your alarm time</p>
         </div>
       </div>
     </div>

@@ -19,33 +19,33 @@ const GlowingBulb = ({ brightness }: GlowingBulbProps) => {
   const shadowSpread = 20 + (brightness / 100) * 80; // 20-100px
   const shadowBlur = 40 + (brightness / 100) * 100; // 40-140px
   
-  // Dynamic color based on brightness
+  // Dynamic color based on brightness - cooler white tones for waking up
   const getBulbColor = () => {
-    if (brightness < 30) return "hsl(0 0% 95%)"; // Off/very dim
-    if (brightness < 60) return "hsl(40 100% 85%)"; // Dim warm
-    if (brightness < 85) return "hsl(35 100% 70%)"; // Medium glow
-    return "hsl(30 100% 60%)"; // Bright warm
+    if (brightness < 30) return "hsl(0 0% 90%)"; // Off/very dim
+    if (brightness < 60) return "hsl(200 20% 92%)"; // Dim cool white
+    if (brightness < 85) return "hsl(200 30% 95%)"; // Medium bright white
+    return "hsl(200 40% 98%)"; // Bright energizing white
   };
 
   return (
     <div className="relative flex items-center justify-center">
-      {/* Outer glow rings */}
+      {/* Outer glow rings - cool white */}
       <div
         className="absolute inset-0 rounded-full transition-all duration-1000 ease-out"
         style={{
-          background: `radial-gradient(circle, hsl(30 100% 70% / ${glowIntensity * 0.2}), transparent)`,
+          background: `radial-gradient(circle, hsl(200 40% 90% / ${glowIntensity * 0.3}), transparent)`,
           transform: `scale(${1 + glowIntensity * 0.5})`,
           opacity: pulseOpacity,
         }}
       />
       
-      {/* Middle glow */}
+      {/* Middle glow - bright white */}
       <div
         className="absolute rounded-full transition-all duration-1000 ease-out"
         style={{
           width: "200px",
           height: "200px",
-          background: `radial-gradient(circle, hsl(35 100% 75% / ${glowIntensity * 0.4}), transparent 70%)`,
+          background: `radial-gradient(circle, hsl(200 50% 95% / ${glowIntensity * 0.5}), transparent 70%)`,
           opacity: pulseOpacity * 0.8,
         }}
       />
@@ -58,9 +58,9 @@ const GlowingBulb = ({ brightness }: GlowingBulbProps) => {
           height: "160px",
           backgroundColor: getBulbColor(),
           boxShadow: `
-            0 0 ${shadowBlur}px ${shadowSpread}px hsl(35 100% 65% / ${glowIntensity * 0.6}),
-            inset 0 -20px 40px hsl(0 0% 100% / ${glowIntensity * 0.3}),
-            inset 0 20px 40px hsl(30 100% 50% / ${glowIntensity * 0.2})
+            0 0 ${shadowBlur}px ${shadowSpread}px hsl(200 50% 90% / ${glowIntensity * 0.7}),
+            inset 0 -20px 40px hsl(200 50% 100% / ${glowIntensity * 0.4}),
+            inset 0 20px 40px hsl(200 40% 80% / ${glowIntensity * 0.2})
           `,
         }}
       >
@@ -86,9 +86,9 @@ const GlowingBulb = ({ brightness }: GlowingBulbProps) => {
         >
           <div className="relative">
             <div
-              className="w-1 h-16 bg-gradient-to-b from-transparent via-primary to-transparent rounded-full"
+              className="w-1 h-16 bg-gradient-to-b from-transparent via-white to-transparent rounded-full"
               style={{
-                boxShadow: `0 0 20px 4px hsl(30 100% 60% / ${glowIntensity})`,
+                boxShadow: `0 0 20px 4px hsl(200 50% 95% / ${glowIntensity})`,
               }}
             />
           </div>
