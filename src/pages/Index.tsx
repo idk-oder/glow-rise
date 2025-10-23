@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import GlowingBulb from "@/components/GlowingBulb";
 import DigitalClock from "@/components/DigitalClock";
 import AlarmTimePicker from "@/components/AlarmTimePicker";
+import AnimatedPerson from "@/components/AnimatedPerson";
 import { Sunrise, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import bedroomScene from "@/assets/bedroom-scene.jpg";
 
 const Index = () => {
   const [alarmTime, setAlarmTime] = useState("06:30");
@@ -77,25 +77,37 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-8 overflow-hidden relative">
-      {/* Bedroom background */}
+    <div className="min-h-screen overflow-hidden relative">
+      {/* Bedroom scene - dark background */}
       <div 
-        className="absolute inset-0 bg-cover bg-center transition-all duration-1000"
+        className="absolute inset-0 transition-all duration-1000"
         style={{
-          backgroundImage: `url(${bedroomScene})`,
-          filter: `brightness(${0.3 + (brightness / 100) * 0.4})`,
+          background: `linear-gradient(to bottom, hsl(220 20% ${10 + brightness / 5}%), hsl(220 20% ${5 + brightness / 10}%))`,
         }}
       />
       
-      {/* Dark overlay for night effect */}
-      <div 
-        className="absolute inset-0 bg-black transition-opacity duration-1000"
-        style={{ opacity: 0.7 - (brightness / 100) * 0.5 }}
-      />
+      {/* Floor */}
+      <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-muted/20 to-transparent" />
+      
+      {/* Bed frame */}
+      <div className="absolute bottom-0 left-1/4 w-1/2 h-20 bg-muted/40 rounded-t-lg" />
+      
+      {/* Animated person in bed */}
+      <AnimatedPerson brightness={brightness} />
 
-      <div className="relative z-10 w-full max-w-2xl flex flex-col items-center gap-12">
+      {/* Wall-mounted Glowing Bulb on the right side */}
+      <div className="absolute top-32 right-24 z-20">
+        {/* Wall mount fixture */}
+        <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-16 h-10 bg-muted/40 rounded-t-lg border border-border/30" />
+        {/* Wall bracket arm */}
+        <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-2 h-8 bg-muted/50" />
+        <GlowingBulb brightness={brightness} />
+      </div>
+
+      {/* Control panel overlay */}
+      <div className="relative z-30 w-full max-w-2xl mx-auto pt-8 px-8 flex flex-col items-center gap-8">
         {/* Header */}
-        <div className="text-center space-y-3 animate-fade-in">
+        <div className="text-center space-y-3 animate-fade-in bg-background/80 backdrop-blur-sm px-6 py-4 rounded-lg">
           <div className="flex items-center justify-center gap-3 mb-2">
             <Sunrise className="w-8 h-8 text-primary" />
             <h1 className="text-3xl font-light text-foreground tracking-wide">Wake-Up Light</h1>
@@ -108,16 +120,9 @@ const Index = () => {
         {/* Current Time */}
         <DigitalClock />
 
-        {/* Wall-mounted Glowing Bulb */}
-        <div className="my-8 relative">
-          {/* Wall mount effect */}
-          <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-20 h-8 bg-muted/30 rounded-t-lg backdrop-blur-sm border border-border/20" />
-          <GlowingBulb brightness={brightness} />
-        </div>
-
         {/* Alarm Controls */}
         {isAlarmRinging && (
-          <div className="animate-fade-in flex gap-4 my-4">
+          <div className="animate-fade-in flex gap-4 my-4 bg-background/90 backdrop-blur-sm px-6 py-4 rounded-lg">
             <Button
               onClick={handleSnooze}
               variant="outline"
@@ -139,7 +144,7 @@ const Index = () => {
         )}
 
         {/* Brightness Indicator */}
-        <div className="w-full max-w-md space-y-3">
+        <div className="w-full max-w-md space-y-3 bg-background/80 backdrop-blur-sm px-6 py-4 rounded-lg">
           <div className="flex justify-between items-center text-sm text-muted-foreground">
             <span>Brightness</span>
             <span className="font-mono text-primary">{Math.round(brightness)}%</span>
@@ -153,7 +158,9 @@ const Index = () => {
         </div>
 
         {/* Alarm Time Picker */}
-        <AlarmTimePicker alarmTime={alarmTime} onAlarmChange={setAlarmTime} />
+        <div className="bg-background/80 backdrop-blur-sm px-6 py-4 rounded-lg">
+          <AlarmTimePicker alarmTime={alarmTime} onAlarmChange={setAlarmTime} />
+        </div>
 
         {/* Info Text */}
         <div className="text-center text-xs text-foreground/60 max-w-md animate-fade-in backdrop-blur-sm bg-card/20 px-4 py-2 rounded-lg">
