@@ -139,7 +139,7 @@ const Index = () => {
             <Button
               onClick={handleStop}
               size="lg"
-              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground font-semibold shadow-lg"
+              className="bg-gradient-to-r from-sunrise-orange to-destructive hover:from-sunrise-orange/90 hover:to-destructive/90 text-white font-bold text-lg px-12 py-6 h-auto rounded-2xl shadow-[0_0_30px_rgba(251,146,60,0.6)] hover:shadow-[0_0_40px_rgba(251,146,60,0.8)] transition-all duration-300 border-2 border-white/20"
             >
               STOP
             </Button>
@@ -177,7 +177,7 @@ const Index = () => {
           </div>
           <div className="h-2 bg-muted rounded-full overflow-hidden shadow-inner">
             <div
-              className="h-full bg-gradient-to-r from-secondary via-primary to-accent rounded-full transition-all duration-1000 ease-out"
+              className="h-full bg-gradient-to-r from-sunrise-yellow via-sunrise-orange to-sunrise-glow rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(251,191,36,0.5)]"
               style={{ width: `${brightness}%` }}
             />
           </div>
