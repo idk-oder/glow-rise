@@ -11,6 +11,7 @@ const Index = () => {
   const [brightness, setBrightness] = useState(0);
   const [isAlarmRinging, setIsAlarmRinging] = useState(false);
   const [isSnoozed, setIsSnoozed] = useState(false);
+  const [isLightOn, setIsLightOn] = useState(false);
 
   useEffect(() => {
     const calculateBrightness = () => {
@@ -36,11 +37,15 @@ const Index = () => {
       if (diffSeconds <= 0) {
         // Alarm has passed or is now - full brightness and ring alarm
         setIsAlarmRinging(true);
+        setIsLightOn(true);
         return 100;
-      } else if (diffSeconds > glowStartSeconds) {
+      } else if (diffSeconds > glowStartSeconds && !isLightOn) {
         // Too early - minimal brightness
         setIsAlarmRinging(false);
         return 5;
+      } else if (isLightOn) {
+        // Keep light on after alarm until stopped
+        return 100;
       } else {
         // Gradually increase brightness from 5% to 100%
         const progress = 1 - (diffSeconds / glowStartSeconds);
@@ -73,6 +78,12 @@ const Index = () => {
 
   const handleDismiss = () => {
     setIsAlarmRinging(false);
+    setBrightness(5);
+  };
+
+  const handleStop = () => {
+    setIsAlarmRinging(false);
+    setIsLightOn(false);
     setBrightness(5);
   };
 
@@ -120,6 +131,19 @@ const Index = () => {
         {/* Current Time */}
         <DigitalClock />
 
+        {/* Stop Button - Always visible when light is on */}
+        {isLightOn && (
+          <div className="animate-fade-in my-4">
+            <Button
+              onClick={handleStop}
+              size="lg"
+              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground font-semibold shadow-lg"
+            >
+              STOP
+            </Button>
+          </div>
+        )}
+
         {/* Alarm Controls */}
         {isAlarmRinging && (
           <div className="animate-fade-in flex gap-4 my-4 bg-background/90 backdrop-blur-sm px-6 py-4 rounded-lg">
@@ -160,11 +184,6 @@ const Index = () => {
         {/* Alarm Time Picker */}
         <div className="bg-background/80 backdrop-blur-sm px-6 py-4 rounded-lg">
           <AlarmTimePicker alarmTime={alarmTime} onAlarmChange={setAlarmTime} />
-        </div>
-
-        {/* Info Text */}
-        <div className="text-center text-xs text-foreground/60 max-w-md animate-fade-in backdrop-blur-sm bg-card/20 px-4 py-2 rounded-lg">
-          <p>The light will gradually brighten 30 seconds before your alarm time</p>
         </div>
       </div>
     </div>
