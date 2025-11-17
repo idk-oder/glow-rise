@@ -22,8 +22,9 @@ const Index = () => {
       const alarm = new Date();
       alarm.setHours(alarmHours, alarmMinutes, 0, 0);
       
-      // If alarm is in the past, set it for tomorrow
-      if (alarm < now) {
+      // If alarm is in the past AND light is not on, set it for tomorrow
+      // Don't move to tomorrow if light is currently on (alarm is active)
+      if (alarm < now && !isLightOn) {
         alarm.setDate(alarm.getDate() + 1);
       }
       
