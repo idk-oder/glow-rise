@@ -120,8 +120,10 @@ const Index = () => {
         {/* Header */}
         <div className="text-center space-y-3 animate-fade-in bg-background/80 backdrop-blur-sm px-6 py-4 rounded-lg">
           <div className="flex items-center justify-center gap-3 mb-2">
-            <Sunrise className="w-8 h-8 text-primary" />
-            <h1 className="text-3xl font-light text-foreground tracking-wide">Wake-Up Light</h1>
+            <Sunrise className="w-8 h-8 text-amber-400" />
+            <h1 className="text-5xl font-bold tracking-wider bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-500 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(251,191,36,0.5)] animate-pulse">
+              GLOW RISE
+            </h1>
           </div>
           <p className="text-sm text-muted-foreground font-light tracking-wide">
             Glowing to wake you up gently
