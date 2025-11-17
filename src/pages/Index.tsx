@@ -63,7 +63,7 @@ const Index = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [alarmTime, isSnoozed]);
+  }, [alarmTime, isSnoozed, isLightOn]);
 
   const handleSnooze = () => {
     const now = new Date();
@@ -133,15 +133,15 @@ const Index = () => {
         {/* Current Time */}
         <DigitalClock />
 
-        {/* Stop Button - Always visible when light is on */}
+        {/* Stop Button - Appears when alarm rings and stays until clicked */}
         {isLightOn && (
-          <div className="animate-fade-in my-4">
+          <div className="animate-fade-in my-6">
             <Button
               onClick={handleStop}
               size="lg"
-              className="bg-gradient-to-r from-sunrise-orange to-destructive hover:from-sunrise-orange/90 hover:to-destructive/90 text-white font-bold text-lg px-12 py-6 h-auto rounded-2xl shadow-[0_0_30px_rgba(251,146,60,0.6)] hover:shadow-[0_0_40px_rgba(251,146,60,0.8)] transition-all duration-300 border-2 border-white/20"
+              className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-black text-2xl px-16 py-8 h-auto rounded-3xl shadow-[0_0_50px_rgba(239,68,68,0.8)] hover:shadow-[0_0_70px_rgba(239,68,68,1)] transition-all duration-300 border-4 border-white animate-pulse uppercase tracking-wider"
             >
-              STOP
+              ⏹ STOP ALARM
             </Button>
           </div>
         )}
